@@ -1,9 +1,12 @@
 
 
 from pathlib import Path
+import os
+
+# Asosiy DIR sozlamalari
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -22,6 +25,7 @@ APPEND_SLASH = False
 # Application definition
 
 INSTALLED_APPS = [
+    'jet',
     'users',
 
     'django.contrib.admin',
@@ -32,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
 ]
-
+# AUTH_USER_MODEL = 'users.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -43,18 +47,29 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+JET_REBOOT = {
+    'site_title': 'ITCLMS Admin',
+    'site_logo': 'img/my_logo.png',
+    'welcome_message': "Xush kelibsiz IT Creative LMS!",
+    'copyright': "© 2025 IT Creative",
+    'theme': 'dark',  # or light
+}
+
+
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Templates papkasi uchun yo'l
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.debug',  # Debug ma'lumotlari
+                'django.template.context_processors.request',  # Request obyekti
+                'django.contrib.auth.context_processors.auth',  # Authentifikatsiya konteksti
+                'django.contrib.messages.context_processors.messages',  # Xabarlar konteksti
             ],
         },
     },

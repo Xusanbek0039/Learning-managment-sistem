@@ -1,13 +1,39 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Welcome to Index Page</h1>
-    <a href="{% url 'login' %}">Login</a>  <!-- Login sahifasiga o'tish uchun link -->
+<body class="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
+    <main class="min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 lg:p-8">
+        <div class="max-w-md w-full bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="p-6 sm:p-8 text-center">
+                {% if user.is_authenticated %}
+                    <!-- Agar foydalanuvchi tizimga kirgan bo'lsa -->
+                    <h2 class="text-2xl font-bold text-slate-800">Salom, {{ user.first_name }} {{ user.last_name }}!</h2>
+                    <p class="text-slate-500 mt-2">Faollik: {{ user.last_login|date:"F j, Y, g:i a" }}</p>
+
+                    <!-- Logout tugmasi -->
+                    <form action="{% url 'logout' %}" method="POST" class="mt-6">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <!-- Agar foydalanuvchi tizimga kirmagan bo'lsa -->
+                    <h2 class="text-2xl font-bold text-slate-800">Welcome!</h2>
+                    <p class="text-slate-500 mt-2">Please log in to continue.</p>
+                    <a href="{% url 'login' %}"
+                        class="mt-6 inline-block w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors">
+                        Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
 </body>
 </html>
