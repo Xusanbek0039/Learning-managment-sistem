@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}
+{% trans "Natija" %} {{ sitting.quiz.title }} {% trans "uchun" %} {{ sitting.user }}
+{% endblock %}
+
+{% block content %}
+<div id="input-nav"><a href="{% url 'home' %}" class="primary1">Bosh saxifa</a> <i>&rsaquo;</i> 
+	<a href="{% url 'quiz_marking' %}" class="primary1">Tugallangan</a> <i>&rsaquo;</i> Belgilangan</div>
+
+<div class="row col-12 justify-content-between">
+	<div class="header-title-md">{% trans "Viktorena nomi" %}: {{ sitting.quiz.title }}</div>
+	<em class="info-text title-danger">{% trans "Turkum" %}: {{ sitting.quiz.category }}</em>
+</div>
+
+<p>{{ sitting.quiz.description }}</p>
+<hr>
+<p><b>{% trans "Foydalanuvchi" %}:</b> {{ sitting.user }}</p>
+<p><b>{% trans "Tugallangan vaqt" %}:</b> {{ sitting.end|date }}</p>
+<p><b>{% trans "Natija" %}:</b> {{ sitting.get_percent_correct }}%</p>
+<!-- <p><b>{% trans "Start" %}:</b> {{ sitting.start }}</p>
+<p><b>{% trans "End" %}:</b> {{ sitting.end }}</p> -->
+
+<table class="table table-bordered table-striped">
+
+  <thead>
+	<tr>
+	  <th>{% trans "Savol" %}</th>
+	  <th>{% trans "Foydalanuvchi javobi" %}</th>
+	  <th></th>
+	  <th></th>
+	</tr>
+  </thead>
+
+  <tbody>
+{% for question in questions %}
+
+	<tr>
+      <td>
+        {{ question.content }}
+        {% if question.figure %}
+        <div style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}" width="100px"/></div>
+        {% endif %}
+      </td>
+	  <td>{{ question }}</td>
+	  <td>
+		{% if question.id in sitting.get_incorrect_questions %}
+		  <p>{% trans "Noto'g'ri" %}</p>
+		{% else %}
+		  <p>{% trans "To'g'ri" %}</p>
+		{% endif %}
+	  </td>
+	  <td>
+		<form action="" method="POST">{% csrf_token %}
+		  <input type=hidden name="qid" value="{{ question.id }}">
+		  <button type="submit" class="btn btn-warning">{% trans "Toʻgʻri yoki yoʻqligini oʻzgartiring" %}</button>
+		</form>
+	  </td>
+	</tr>
+
+{% endfor %}
+
+  </tbody>
+
+</table>
+{% endblock %}

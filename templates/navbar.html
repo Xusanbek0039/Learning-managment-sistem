@@ -1,0 +1,230 @@
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+
+	.header {
+    background: #ffffff00;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    top: 0;  /* Sahifaning yuqori qismiga yopishib turadi */
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 1;  /* Navbarni orqaga o'tkazish uchun */
+}
+
+
+
+	.header-content {
+		max-width: 700px;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	.logo img {
+		height: 40px;
+		border-radius: 50%;
+	}
+
+	.search-dropdown-container {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		flex-grow: 1;
+		max-width: 800px;
+		width: 100%;
+	}
+
+	form.form-header {
+		display: flex;
+		flex-grow: 1;
+	}
+
+	.form-header input {
+		flex-grow: 1;
+		padding: 8px 15px;
+		border: 1px solid #ddd;
+		border-radius: 4px 0 0 4px;
+		font-size: 14px;
+	}
+
+	.form-header button {
+		background-color: #007bff;
+		color: #fff;
+		border: none;
+		padding: 8px 15px;
+		border-radius: 0 4px 4px 0;
+		cursor: pointer;
+	}
+
+	.user-menu {
+		display: flex;
+		align-items: center;
+	}
+
+	.dropdown {
+		position: relative;
+	}
+
+	.dropdown-toggle {
+		background: none;
+		border: none;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		color: #333;
+		font-size: 14px;
+	}
+
+	.dropdown-menu {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		background: white;
+		border-radius: 4px;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		min-width: 200px;
+		display: fle;
+		margin-top: 10px;
+		z-index: 10;
+	}
+
+	.dropdown-menu.show {
+		display: block;
+	}
+
+	.dropdown-item {
+		padding: 10px 15px;
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+		color: #333;
+		transition: background-color 0.2s;
+	}
+
+	.dropdown-item:hover {
+		background-color: #f5f5f5;
+	}
+
+	.dropdown-item i {
+		margin-right: 10px;
+		width: 20px;
+		text-align: center;
+	}
+
+	.time-info {
+		color: #666;
+		font-size: 12px;
+		padding: 5px 15px;
+		background: #f8f9fa;
+		border-top: 1px solid #eee;
+	}
+
+
+	.search-dropdown-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* ICONNI O‘ZI */
+.toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: #007bff;
+    transition: background-color 0.3s ease;
+}
+
+/* ICON ICHIDAGI BAR */
+.toggle-btn i {
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* FORM HOLATI */
+.form-header {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+
+/* INPUTNI O‘ZINI STILI */
+.form-header input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+}
+
+/* SEARCH BUTTON */
+.form-header button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+}
+
+/* MOBIL VERSIYA */
+@media (max-width: 768px) {
+    .search-dropdown-container {
+        flex-direction: row; /* Fa-bars icon va inputni bir qatorda */
+        align-items: center;
+    }
+
+    .form-header {
+        flex-grow: 1; /* Input maydoni kengayishi uchun */
+    }
+}
+
+	
+</style>
+
+<header class="header">
+	
+	<div class="header-content">
+		<div class="search-dropdown-container">
+			<div class="toggle-btn" onclick="toggleSidebar()">
+				<i class="fas fa-bars"></i>
+			</div>
+		
+			<form class="form-header" action="{% url 'query' %}" method="GET">
+				<input type="text" name="q" value="{{ request.GET.q }}" placeholder="Qidiruv... #Kurs #Yo'nalish #Ustoz #O'quvchi" required />
+				<button type="submit"><i class="fas fa-search"></i></button>
+			</form>
+		</div>
+		
+		
+</header>
+
+<script>
+	function toggleDropdown() {
+		const dropdown = document.getElementById('userDropdown');
+		dropdown.classList.toggle('show');
+	}
+
+	document.addEventListener('click', (e) => {
+		if (!e.target.closest('.dropdown')) {
+			document.getElementById('userDropdown')?.classList.remove('show');
+		}
+	});
+</script>

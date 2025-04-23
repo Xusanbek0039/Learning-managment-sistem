@@ -1,0 +1,168 @@
+{% extends 'registration/registration_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}IT Creative LMS - Kirish{% endblock title %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .video-background {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            filter: brightness(50%);
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+            width: 400px;
+            text-align: center;
+        }
+
+        .login-header {
+            color: #1a73e8;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #1a73e8;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .login-button {
+            background: #1a73e8;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .login-button:hover {
+            background: #1557b0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Video Background -->
+    <video class="video-background" autoplay muted loop>
+        <source src="https://media.istockphoto.com/id/1819386264/video/motion-graphic-of-blue-digital-security-shield-logo-and-circle-futuristic-hud-elements-with.mp4?s=mp4-640x640-is&k=20&c=_RWpp8Ohtmscx4i_2LdWFYTY_uKNTqXQZRtvS2UX-nM=" type="video/mp4">
+    </video>
+
+    <div class="container">
+        <div class="login-box">
+            <h1 class="login-header">Kirish</h1>
+
+            <form action="" method="POST" id="login-form">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label for="username_id">ID raqam</label>
+                    <input type="text" name="username" id="username_id" required>
+                    <div id="message-wrapper"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="password_id">Parol</label>
+                    <input type="password" name="password" id="password_id" required>
+                </div>
+
+                {% if form.errors %}
+                    <div class="error-message">Noto'g'ri ID yoki Parol.</div>
+                {% endif %}
+
+                <button type="submit" class="login-button" id="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> KIRISH
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+{% endblock content %}
+
+{% block js %}
+<script>
+    // Submit bo‘lganda tugmani disabled qilish
+    document.getElementById("login-form").addEventListener("submit", function(e) {
+        document.getElementById("login-btn").classList.add("disabled");
+        document.getElementById("login-btn").innerHTML = '<i class="fas fa-sign-in-alt"></i> Hisob tekshirilmoqda . . .';
+    });
+
+    // AJAX orqali username tekshirish
+    document.getElementById("username_id").addEventListener("input", function() {
+        const username = this.value;
+
+        fetch(`/accounts/ajax/validate-username/?username=${encodeURIComponent(username)}`)
+            .then(response => response.json())
+            .then(data => {
+                const wrapper = document.getElementById("message-wrapper");
+                if (data.is_taken) {
+                    wrapper.innerHTML = `<p class="my-2 text-success"><span class="bg-error p-2"><b>${username}</b> parolni kiriting!</span></p>`;
+                } else {
+                    wrapper.innerHTML = `<p class="my-2 text-danger"><span class="bg-correct p-2"><b>${username}</b> mavjud emas!</span></p>`;
+                }
+            });
+    });
+</script>
+{% endblock js %}
+</html>

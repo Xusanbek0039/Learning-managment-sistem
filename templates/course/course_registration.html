@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div id="input-nav"><a href="{% url 'home' %}" class="primary1">Bosh saxifa</a> Kursga ro'yxatga olish</div>
+
+<p class="title-1">Kurs qo'shish</p>
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert alert-danger">
+    <i class="fas fa-exclamation-circle"></i>{{ message }}
+</div>
+{% else %}
+<div class="alert alert-success">
+    <i class="fas fa-check-circle"></i>{{ message }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+
+{% if is_calender_on == False %}
+
+<div class="alert bg-danger">
+    <h1 class="text-light text-center">Taqvim oʻchirilgan</h1>
+    <h5 class="text-light text-center">IT Park Zomin kalendarini tekshiring</h5>
+</div>
+
+{% else %}
+
+{% if not all_courses_are_registered %}
+
+<form action="{% url 'course_registration' %}" method="POST">{% csrf_token %}
+    <div class="col-md-12 p-0 bg-white">
+        <p class="form-title">
+            <b>Kurs qo'shish</b>
+        <div class="level-wrapper">
+        </div>
+        </p>
+        <div class="container">
+            <div class="d-flex justify-content-between mb-3">
+                <button title="Save Score" type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> Belgilanganlarni qo'shish</button>
+            </div>
+
+            <div class="table-responsive p-0 px-2 mt-2">
+                <div class="table-title"><u>Birinchi yarim kurs:</u></div>
+                <div class="table-shadow">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Belgilash</th>
+                                <th>Kurs kodi</th>
+                                <th>Kurs nomi</th>
+                                <th>Kredit</th>
+                                <th>Davomilik</th>
+                                <th>Tasniflash</th>
+                                <th>Tanlangan gurux</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            {% if course.semester == "First" %}
+                            <tr>
+                                <th scope="row">
+                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox">
+                                </th>
+                                <td>{{ course.code }}</td>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.credit }}</td>
+                                <td>{{ course.year }}</td>
+                                {% if course.is_elective %}
+                                <td>Tanlangan</td>
+                                {% else %}
+                                <td>Mavjud</td>
+                                {% endif %}
+                                <th>-</th>
+                            </tr>
+                            {% endif %}
+                            {% empty %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-danger">
+                                        <i class="far fa-frown"></i>Hozirda kurs mavjud emas!
+                                    </span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <th></th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><b>Kreditlar:</b> {{ total_first_semester_credit }} </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-responsive p-0 px-2 mt-2">
+                <div class="table-title"><u>Ikkinchi yarim kurs:</u></div>
+                <div class="table-shadow">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Belgilash</th>
+                                <th>Kurs kodi</th>
+                                <th>Kurs nomi</th>
+                                <th>Kredit</th>
+                                <th>Davomiylik</th>
+                                <th>Tasniflash</th>
+                                <th>Tanlangan guruh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            {% if course.semester == "Second" %}
+                            <tr>
+                                <th scope="row">
+                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox">
+                                </th>
+                                <td>{{ course.code }}</td>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.credit }}</td>
+                                <td>{{ course.year }}</td>
+                                {% if course.is_elective %}
+                                <td>Tanlangan</td>
+                                {% else %}
+                                <td>Mavjud</td>
+                                {% endif %}
+                                <th>-</th>
+                            </tr>
+                            {% endif %}
+                            {% empty %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-danger">
+                                        <i class="far fa-frown"></i>Hozirda kurs mavjud emas!
+                                    </span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <th></th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><b>Berilgan darslar:</b> {{ total_sec_semester_credit }} </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td><b>Mavjud kurslar: <a id="units">{{ total_registered_credit }}</a></b>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><b>Umumiy darslar:</b> {{ total_sec_semester_credit|add:total_first_semester_credit}} </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endif %}
+<br>
+<br>
+
+{% if not no_course_is_registered %}
+
+<a target="_blank" href="{% url 'course_registration_form' %}">
+    <span title="Ma'lumotnomani olish" class="btn btn-warning">
+        <i class="fa fa-file-pdf-o" aria-hidden="true"></i><i class="fas fa-print"></i> Ma'lumotnomani olish
+    </span>
+</a>
+
+<div class="col-md-12 p-0 bg-white">
+    <p class="form-title"><b>Belgilangan kurslar</b>
+    <div class="level-wrapper">
+    </div>
+    </p>
+    <div class="container">
+        <form action="{% url 'course_drop' %}" method="POST">
+            {% csrf_token %}
+            <div class="d-flex justify-content-between mb-4">
+                <button title="Save Score" type="submit" class="btn btn-primary">
+                    <i class="fa fa-times"></i> Belgilangan kursni bekor qilish
+                </button>
+            </div>
+
+            <!-- <div>
+            <a target="_blank" href="{% url 'course_registration_form' %}" class="btn btn-outline-white btn-rounded btn-sm px-2">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i> Print Registration Form
+              </a>
+            </div> -->
+
+            <div class="table-responsive p-0 px-2 mt-2">
+                <div class="table-shadow">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Belgilash</th>
+                                <th>Kurs kodi</th>
+                                <th>Kurs nomi</th>
+                                <th>Kredit</th>
+                                <th>Davomiylik</th>
+                                <th>Tasniflash</th>
+                                <th>Tanlangan gurux</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in registered_courses %}
+                            <tr>
+                                <th scope="row">
+                                    <input name="{{ course.pk }}" value="{{ course.courseUnit }}" type="checkbox">
+                                </th>
+                                <td>{{ course.code }}</td>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.credit }}</td>
+                                <td>{{ course.year }}</td>
+                                {% if course.is_elective %}
+                                <td>--</td>
+                                {% else %}
+                                <td>Mavjud</td>
+                                {% endif %}
+                                <th>-</th>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-danger">
+                                        <i class="far fa-frown"></i>Kurs mavjud emas.
+                                    </span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <th></th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><b>Darslar soni:</b> {{ total_registered_credit }} </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endif %}
+
+{% endif %}
+
+{% endblock content %}
